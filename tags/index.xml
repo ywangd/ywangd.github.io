@@ -6,9 +6,28 @@
     <description>Recent content in Tags on WildPointer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Sat, 23 Mar 2019 20:57:02 +1100</lastBuildDate>
     
 	<atom:link href="https://ywangd.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Book</title>
+      <link>https://ywangd.github.io/tags/book/</link>
+      <pubDate>Sat, 23 Mar 2019 20:57:02 +1100</pubDate>
+      
+      <guid>https://ywangd.github.io/tags/book/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Csrf</title>
+      <link>https://ywangd.github.io/tags/csrf/</link>
+      <pubDate>Sun, 09 Dec 2018 10:52:34 +1100</pubDate>
+      
+      <guid>https://ywangd.github.io/tags/csrf/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

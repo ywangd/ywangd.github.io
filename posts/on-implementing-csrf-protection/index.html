@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>WildPointer  | On Implementing CSRF Protection</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.53-DEV" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.955516233bcafa4d2a1c13cea63c7b50.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="On Implementing CSRF Protection" />
+<meta property="og:description" content="When it comes to web security, the word CSRF always comes into the picture. It stands for Cross-Site Request Forgery. This full name is actually quite literal:
+ It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s browser. Hence it must obey browser rules. Programmatic interaction with a server is out of scope. It is a Forgery - the request is crafted by an attacker but sent by a legit user without being aware of it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ywangd.github.io/posts/on-implementing-csrf-protection/" /><meta property="article:published_time" content="2018-12-09T10:52:34&#43;11:00"/>
+<meta property="article:modified_time" content="2018-12-09T10:52:34&#43;11:00"/>
+
+<meta itemprop="name" content="On Implementing CSRF Protection">
+<meta itemprop="description" content="When it comes to web security, the word CSRF always comes into the picture. It stands for Cross-Site Request Forgery. This full name is actually quite literal:
+ It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s browser. Hence it must obey browser rules. Programmatic interaction with a server is out of scope. It is a Forgery - the request is crafted by an attacker but sent by a legit user without being aware of it.">
+
+
+<meta itemprop="datePublished" content="2018-12-09T10:52:34&#43;11:00" />
+<meta itemprop="dateModified" content="2018-12-09T10:52:34&#43;11:00" />
+<meta itemprop="wordCount" content="821">
+
+
+
+<meta itemprop="keywords" content="csrf," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="On Implementing CSRF Protection"/>
+<meta name="twitter:description" content="When it comes to web security, the word CSRF always comes into the picture. It stands for Cross-Site Request Forgery. This full name is actually quite literal:
+ It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s browser. Hence it must obey browser rules. Programmatic interaction with a server is out of scope. It is a Forgery - the request is crafted by an attacker but sent by a legit user without being aware of it."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  
+  <header class="cover bg-top" style="background-image: url('https://ywangd.github.io/images/big-bad-wolf-actually-cute.jpg');">
+    <div class="pb3-m pb6-l bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://ywangd.github.io/" class="f3 fw2 hover-white no-underline white-90 dib">
+      WildPointer
+    </a>
+    <div class="flex-l items-center">
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/posts/" title="Articles page">
+              Articles
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div hidden>
+  <span id="new-window-0">Opens in a new window</span>
+  <span id="new-window-1">Opens an external site</span>
+  <span id="new-window-2">Opens an external site in a new window</span>
+</div>
+
+
+
+
+
+
+
+<a href="https://github.com/ywangd" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-describedby="new-window-0">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">On Implementing CSRF Protection</h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3 ph0-l">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        ARTICLES
+      </p>
+      <h1 class="f1 athelas mb1">On Implementing CSRF Protection</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-12-09T10:52:34&#43;11:00">December 9, 2018</time>      
+      
+      
+    </header>
+
+    <main class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>When it comes to web security, the word CSRF always comes into the picture. It
+stands for Cross-Site Request Forgery. This full name is actually quite
+literal:</p>
+
+<ul>
+<li>It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s
+browser. Hence it must obey browser rules. Programmatic interaction with a
+server is out of scope.</li>
+<li>It is a Forgery - the request is crafted by an attacker but sent by a legit
+user without being aware of it.</li>
+<li>It is Cross-Site - the request is originated from outside of the website
+being attacked.</li>
+</ul>
+
+<p>To counter the attack, a request is required to carry a small piece of
+information called CSRF token for the server to verify. This token is just
+a random string generated on the server side. It is made available to the
+browser so that it can be sent back to server for verification. So far it
+sounds pretty straightforward. However, when it comes to implementation, there
+are a few puzzles need to be solved.</p>
+
+<p><strong>Server - When to generate the token</strong></p>
+
+<p>It is probably obvious that this token should to be generated at
+filter/middleware level and that is correct. It is however not sufficient for
+<a href="https://www.owasp.org/index.php/Session_fixation">session fixation</a>
+protection, which requires a new token to be generated after authentication.
+For this purpose, the token needs to be generated in a different place, which
+is likely not at the filter/middleware level.</p>
+
+<p><strong>Server - Where to store the source of truth token</strong></p>
+
+<p>It seems logical to store the source of truth CSRF token in user session and it
+should be the case once the user is authenticated as the token&rsquo;s lifetime should
+be tied to the session itself. However, before the user is authenticated, a
+session is not ideal for this purpose. For an example, an user may open up the
+logon page on day 1 and do not perform the actual login action till day 2. The
+session is most likely long gone before the actual login action. Thus a CSRF
+error is given back to user if the token is tied to session. Therefore the token
+should only be stored in session after authentication. Pre-authentication CSRF
+protection can be implemented using the
+<a href="https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md#double-submit-cookie">double submit cookie pattern</a>,
+which basically stores the token as cookie on user side. Thus avoid having to
+tie the token with a session.</p>
+
+<p><strong>Server - How to make the token available to client</strong></p>
+
+<p>The common behaviour is to set the token as a response cookie back to the user.
+This should suffice the minimal requirement to make the whole thing work. Often
+server side will also insert this token as a hidden field for HTML forms
+rendered from server side, which in theory is not absolutely necessary but
+always nice to have.</p>
+
+<p><strong>Client - How to send it back to server</strong></p>
+
+<p>Cookies are automatically sent back to server. So the CSRF token (as one of the
+cookies) is also made available to server automatically. However it is not
+sufficient to just have the cookie also because it is sent automatically. This
+means a link on website B pointing to website A can instruct a browser to send
+the cookie to website A. The important thing to note here is that host of the
+link is website B which could be malicious. Even though the content of the
+cookie value is trustworthy, the server cannot be sure whether it is sent over
+with good intention. Therefore some other information is needed to ensure good
+intention. This is commonly done by sending the same token via either request
+parameter or header, which cannot be forged by an external website since it
+does not have access to the token&rsquo;s value. In summary, a browser should send
+the CSRF token back to server as at least request parameter or header and
+optionally as a cookie. A implication of sending the token as request parameter
+or header is that the CSRF cookie cannot be made
+<a href="https://www.owasp.org/index.php/HttpOnly">HttpOnly</a> as client side scripts
+need to read this cookie value to populate either request parameter or header.</p>
+
+<p><strong>Server - How to be sure of the authenticity of the token</strong></p>
+
+<p>The server needs to compare the client CSRF token (via request parameter or
+header) to the source of truth token. As discussed above the source of truth can
+be either from the session (post-authentication) or request cookie
+(pre-authentication). After comparison, server can then choose either to block
+or allow access based the result.</p>
+
+<p><strong>A twist of header &ldquo;X-Requested-With: XMLHttpRequest&rdquo;</strong></p>
+
+<p>The <a href="https://jquery.com/">jQuery library</a> has the convention to use
+<code>X-Requested-With: XMLHttpRequest</code> header for providing an universal CSRF
+protection without relying on any particular token values. This is considered
+safe for most scenarios. However it could be broken in <a href="https://www.whitehatsec.com/blog/flash-307-redirect-game-over/">some extreme
+case</a> due to
+browser bugs. So for maximal coverage, this header should not be used and it
+should always require an actual token for verification. For jQuery
+specifically, this can be configured by global <code>ajaxSettings</code>.</p>
+<ul class="pa0">
+  
+   <li class="list">
+     <a href="/tags/csrf" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">csrf</a>
+   </li>
+  
+</ul>
+<div class="mt6">
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ywangd" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </main>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-navy bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://ywangd.github.io/" >
+    &copy; 2019 WildPointer
+  </a>
+    <div>
+<div hidden>
+  <span id="new-window-0">Opens in a new window</span>
+  <span id="new-window-1">Opens an external site</span>
+  <span id="new-window-2">Opens an external site in a new window</span>
+</div>
+
+
+
+
+
+
+
+<a href="https://github.com/ywangd" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-describedby="new-window-0">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>
