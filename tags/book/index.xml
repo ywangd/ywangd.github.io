@@ -17,8 +17,8 @@
       <pubDate>Sat, 23 Mar 2019 20:57:02 +1100</pubDate>
       
       <guid>https://ywangd.github.io/posts/sed-and-awk/</guid>
-      <description>I have been using both sed and awk in its basic forms for quite sometime without study them systematically. So the understandings were always a bit incomplete and hence inconsistent. So after many years of delay, I finally read the classic book of Sed &amp;amp; Awk.
-It is a great read for anyone who is interesting in the two tools or just good-old Unix quirks. For an example, now I know name of the grep tool is based on the g/re/p command of the classic ed, or how ed, Vi, and Sed are related to each other (hint: they share similar command pattern).</description>
+      <description>I have been using both Sed and Awk in its basic forms for quite sometime without study them systematically. So the understandings were always a bit incomplete and hence inconsistent. So after many years of delay, I finally read the classic book of Sed &amp;amp; Awk.
+It is a great read for anyone who is interested in the two tools or just good-old Unix quirks. For an example, name of the grep tool is based on the g/re/p command of the classic ed, or how ed, Vi, and Sed are related to each other (hint: they share similar command pattern).</description>
     </item>
     
   </channel>
