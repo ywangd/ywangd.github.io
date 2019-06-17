@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>SSL Certificate Revocation Check in Java</title>
+      <link>https://ywangd.github.io/posts/crl-check-in-java/</link>
+      <pubDate>Mon, 17 Jun 2019 21:31:11 +1000</pubDate>
+      
+      <guid>https://ywangd.github.io/posts/crl-check-in-java/</guid>
+      <description>A SSL certificate can be revoked and becomes invalid before initially issued expiration time. A Certificate Authority (CA) can publish a list of revoked certificates (CRL) to allow downloads by clients. Java has builtin support for certificate revocation status check. As all other Java security features, the implementation is provider based. The default provider is from the sun package.
+Please note that I am aware that OCSP or OCSP stapling should be preferred over CRL.</description>
+    </item>
+    
+    <item>
       <title>Sed &amp; Awk</title>
       <link>https://ywangd.github.io/posts/sed-and-awk/</link>
       <pubDate>Sat, 23 Mar 2019 20:57:02 +1100</pubDate>
