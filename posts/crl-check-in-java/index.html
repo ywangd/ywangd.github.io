@@ -42,7 +42,7 @@ Please note that I am aware that OCSP or OCSP stapling should be preferred over 
 
 <meta itemprop="datePublished" content="2019-06-17T21:31:11&#43;10:00" />
 <meta itemprop="dateModified" content="2019-06-17T21:31:11&#43;10:00" />
-<meta itemprop="wordCount" content="625">
+<meta itemprop="wordCount" content="624">
 
 
 
@@ -211,7 +211,7 @@ pkixBuilderParameters<span style="color:#f92672">.</span><span style="color:#a6e
 
 <h3 id="com-sun-net-ssl-checkrevocation"><code>com.sun.net.ssl.checkRevocation</code></h3>
 
-<p>This property is less well-known and used by <code>sun.security.validator.PKIXValidator</code>. This class is not part of the provider architecture and hence can only be instantiated directly. As best practice, we should not directly use it since it is from the <code>sun</code> package. Internally it calls <code>CertPathValidator.getInstance(&quot;PKIX&quot;)</code> and just delegates validation to the returned <code>CertPathValidator</code>. Therefore there really is no good reason for an end-user to use this class at all.</p>
+<p>This property is less well-known and used by <code>sun.security.validator.PKIXValidator</code> to enable revocation checking. Internally it calls <code>CertPathValidator.getInstance(&quot;PKIX&quot;)</code> and passes a <code>PKIXParameters</code> object (with <code>revocationEnabled</code> set to <code>true</code>) to the returned <code>CertPathValidator</code>. Note that this property only enables revocation checking, <strong>not</strong> online CRL fetching. For fetching CRL, we still need to set <code>com.sun.security.enableCRLDP</code>. Usage of <code>PKIXValidator</code> is rather limited: only <code>X509TrustManagerImpl</code>, returned by the default <code>TrustManagerFactory</code>, calls to it.</p>
 <ul class="pa0">
   
    <li class="list">
