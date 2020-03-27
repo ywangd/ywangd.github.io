@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>spring on WildPointer</title>
+    <link>https://ywangd.github.io/tags/spring/</link>
+    <description>Recent content in spring on WildPointer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 01 Jun 2019 12:43:04 +1000</lastBuildDate>
+    
+	<atom:link href="https://ywangd.github.io/tags/spring/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Spring Boot FactoryBean</title>
+      <link>https://ywangd.github.io/posts/spring-boot-factorybean/</link>
+      <pubDate>Sat, 01 Jun 2019 12:43:04 +1000</pubDate>
+      
+      <guid>https://ywangd.github.io/posts/spring-boot-factorybean/</guid>
+      <description>TODO</description>
+    </item>
+    
+  </channel>
+</rss>

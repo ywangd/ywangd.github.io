@@ -1,10 +1,73 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ywangd.github.io/tags/algorithm/</loc>
+    <lastmod>2020-03-11T23:54:26+11:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/tags/paxos/</loc>
+    <lastmod>2020-03-11T23:54:26+11:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/tags/synod/</loc>
+    <lastmod>2020-03-11T23:54:26+11:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/tags/</loc>
+    <lastmod>2020-03-11T23:54:26+11:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/posts/paxos-synod/</loc>
+    <lastmod>2020-03-11T23:54:26+11:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/</loc>
+    <lastmod>2020-03-11T23:54:26+11:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/tags/java/</loc>
+    <lastmod>2019-06-17T21:31:11+10:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/tags/ssl/</loc>
+    <lastmod>2019-06-17T21:31:11+10:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://ywangd.github.io/posts/crl-check-in-java/</loc>
     <lastmod>2019-06-17T21:31:11+10:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://ywangd.github.io/tags/book/</loc>
+    <lastmod>2019-03-23T20:57:02+11:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -31,6 +94,13 @@
   </url>
   
   <url>
+    <loc>https://ywangd.github.io/tags/csrf/</loc>
+    <lastmod>2018-12-09T10:52:34+11:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://ywangd.github.io/posts/on-implementing-csrf-protection/</loc>
     <lastmod>2018-12-09T10:52:34+11:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -45,49 +115,7 @@
   </url>
   
   <url>
-    <loc>https://ywangd.github.io/tags/book/</loc>
-    <lastmod>2019-03-23T20:57:02+11:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://ywangd.github.io/categories/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://ywangd.github.io/tags/csrf/</loc>
-    <lastmod>2018-12-09T10:52:34+11:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://ywangd.github.io/tags/java/</loc>
-    <lastmod>2019-06-17T21:31:11+10:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://ywangd.github.io/tags/ssl/</loc>
-    <lastmod>2019-06-17T21:31:11+10:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://ywangd.github.io/tags/</loc>
-    <lastmod>2019-03-23T20:57:02+11:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://ywangd.github.io/</loc>
-    <lastmod>2019-06-17T21:31:11+10:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

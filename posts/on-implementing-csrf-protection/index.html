@@ -9,7 +9,7 @@
     <meta name="MobileOptimized" content="320">
 
     <meta name="viewport" content="width=device-width,minimum-scale=1">
-    <meta name="generator" content="Hugo 0.53-DEV" />
+    <meta name="generator" content="Hugo 0.67.0" />
     
     
       <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
@@ -32,22 +32,19 @@
 <meta property="og:description" content="When it comes to web security, the word CSRF always comes into the picture. It stands for Cross-Site Request Forgery. This full name is actually quite literal:
  It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s browser. Hence it must obey browser rules. Programmatic interaction with a server is out of scope. It is a Forgery - the request is crafted by an attacker but sent by a legit user without being aware of it." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ywangd.github.io/posts/on-implementing-csrf-protection/" /><meta property="article:published_time" content="2018-12-09T10:52:34&#43;11:00"/>
-<meta property="article:modified_time" content="2018-12-09T10:52:34&#43;11:00"/>
-
+<meta property="og:url" content="https://ywangd.github.io/posts/on-implementing-csrf-protection/" />
+<meta property="article:published_time" content="2018-12-09T10:52:34+11:00" />
+<meta property="article:modified_time" content="2018-12-09T10:52:34+11:00" />
 <meta itemprop="name" content="On Implementing CSRF Protection">
 <meta itemprop="description" content="When it comes to web security, the word CSRF always comes into the picture. It stands for Cross-Site Request Forgery. This full name is actually quite literal:
  It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s browser. Hence it must obey browser rules. Programmatic interaction with a server is out of scope. It is a Forgery - the request is crafted by an attacker but sent by a legit user without being aware of it.">
-
-
 <meta itemprop="datePublished" content="2018-12-09T10:52:34&#43;11:00" />
 <meta itemprop="dateModified" content="2018-12-09T10:52:34&#43;11:00" />
 <meta itemprop="wordCount" content="821">
 
 
 
-<meta itemprop="keywords" content="csrf," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="csrf," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="On Implementing CSRF Protection"/>
 <meta name="twitter:description" content="When it comes to web security, the word CSRF always comes into the picture. It stands for Cross-Site Request Forgery. This full name is actually quite literal:
  It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s browser. Hence it must obey browser rules. Programmatic interaction with a server is out of scope. It is a Forgery - the request is crafted by an attacker but sent by a legit user without being aware of it."/>
@@ -145,7 +142,6 @@
     <main class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>When it comes to web security, the word CSRF always comes into the picture. It
 stands for Cross-Site Request Forgery. This full name is actually quite
 literal:</p>
-
 <ul>
 <li>It is a HTTP request - attack happens on the client side, i.e. within user&rsquo;s
 browser. Hence it must obey browser rules. Programmatic interaction with a
@@ -155,25 +151,20 @@ user without being aware of it.</li>
 <li>It is Cross-Site - the request is originated from outside of the website
 being attacked.</li>
 </ul>
-
 <p>To counter the attack, a request is required to carry a small piece of
 information called CSRF token for the server to verify. This token is just
 a random string generated on the server side. It is made available to the
 browser so that it can be sent back to server for verification. So far it
 sounds pretty straightforward. However, when it comes to implementation, there
 are a few puzzles need to be solved.</p>
-
 <p><strong>Server - When to generate the token</strong></p>
-
 <p>It is probably obvious that this token should to be generated at
 filter/middleware level and that is correct. It is however not sufficient for
 <a href="https://www.owasp.org/index.php/Session_fixation">session fixation</a>
 protection, which requires a new token to be generated after authentication.
 For this purpose, the token needs to be generated in a different place, which
 is likely not at the filter/middleware level.</p>
-
 <p><strong>Server - Where to store the source of truth token</strong></p>
-
 <p>It seems logical to store the source of truth CSRF token in user session and it
 should be the case once the user is authenticated as the token&rsquo;s lifetime should
 be tied to the session itself. However, before the user is authenticated, a
@@ -186,17 +177,13 @@ protection can be implemented using the
 <a href="https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.md#double-submit-cookie">double submit cookie pattern</a>,
 which basically stores the token as cookie on user side. Thus avoid having to
 tie the token with a session.</p>
-
 <p><strong>Server - How to make the token available to client</strong></p>
-
 <p>The common behaviour is to set the token as a response cookie back to the user.
 This should suffice the minimal requirement to make the whole thing work. Often
 server side will also insert this token as a hidden field for HTML forms
 rendered from server side, which in theory is not absolutely necessary but
 always nice to have.</p>
-
 <p><strong>Client - How to send it back to server</strong></p>
-
 <p>Cookies are automatically sent back to server. So the CSRF token (as one of the
 cookies) is also made available to server automatically. However it is not
 sufficient to just have the cookie also because it is sent automatically. This
@@ -213,17 +200,13 @@ optionally as a cookie. A implication of sending the token as request parameter
 or header is that the CSRF cookie cannot be made
 <a href="https://www.owasp.org/index.php/HttpOnly">HttpOnly</a> as client side scripts
 need to read this cookie value to populate either request parameter or header.</p>
-
 <p><strong>Server - How to be sure of the authenticity of the token</strong></p>
-
 <p>The server needs to compare the client CSRF token (via request parameter or
 header) to the source of truth token. As discussed above the source of truth can
 be either from the session (post-authentication) or request cookie
 (pre-authentication). After comparison, server can then choose either to block
 or allow access based the result.</p>
-
 <p><strong>A twist of header &ldquo;X-Requested-With: XMLHttpRequest&rdquo;</strong></p>
-
 <p>The <a href="https://jquery.com/">jQuery library</a> has the convention to use
 <code>X-Requested-With: XMLHttpRequest</code> header for providing an universal CSRF
 protection without relying on any particular token values. This is considered
@@ -276,7 +259,7 @@ specifically, this can be configured by global <code>ajaxSettings</code>.</p>
     <footer class="bg-navy bottom-0 w-100 pa3" role="contentinfo">
   <div class="flex justify-between">
   <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://ywangd.github.io/" >
-    &copy; 2019 WildPointer
+    &copy; 2020 WildPointer
   </a>
     <div>
 <div hidden>

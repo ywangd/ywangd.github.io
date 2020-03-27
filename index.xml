@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>WildPointer</title>
@@ -6,10 +6,19 @@
     <description>Recent content on WildPointer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 17 Jun 2019 21:31:11 +1000</lastBuildDate>
+    <lastBuildDate>Wed, 11 Mar 2020 23:54:26 +1100</lastBuildDate>
     
 	<atom:link href="https://ywangd.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Understanding the Synod Protocol and Its Proof</title>
+      <link>https://ywangd.github.io/posts/paxos-synod/</link>
+      <pubDate>Wed, 11 Mar 2020 23:54:26 +1100</pubDate>
+      
+      <guid>https://ywangd.github.io/posts/paxos-synod/</guid>
+      <description>Introduction The Synod protocol is the centre piece of the Paxos algorithm. The protocol itself is not hard to understand but the proof is not so much. In this article, I attempt to explain the proof in a more accessible way. As a consequence of trying to dumb it down, my explanation is not going to be as bullet-proof as in the paper. But hopefully it serves as an easier entrance and stepping stone.</description>
+    </item>
     
     <item>
       <title>SSL Certificate Revocation Check in Java</title>

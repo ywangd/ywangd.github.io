@@ -9,7 +9,7 @@
     <meta name="MobileOptimized" content="320">
 
     <meta name="viewport" content="width=device-width,minimum-scale=1">
-    <meta name="generator" content="Hugo 0.53-DEV" />
+    <meta name="generator" content="Hugo 0.67.0" />
     
     
       <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
@@ -32,22 +32,19 @@
 <meta property="og:description" content="A SSL certificate can be revoked and becomes invalid before the issued expiration time. A Certificate Authority (CA) can publish a list of revoked certificates (CRL) for clients to download. Java has builtin support for certificate revocation status check. Similar to all other Java security features, the implementation is provider based. The default provider is from the sun package.
 Please note that I am aware that OCSP or OCSP stapling should be preferred over CRL." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ywangd.github.io/posts/crl-check-in-java/" /><meta property="article:published_time" content="2019-06-17T21:31:11&#43;10:00"/>
-<meta property="article:modified_time" content="2019-06-17T21:31:11&#43;10:00"/>
-
+<meta property="og:url" content="https://ywangd.github.io/posts/crl-check-in-java/" />
+<meta property="article:published_time" content="2019-06-17T21:31:11+10:00" />
+<meta property="article:modified_time" content="2019-06-17T21:31:11+10:00" />
 <meta itemprop="name" content="SSL Certificate Revocation Check in Java">
 <meta itemprop="description" content="A SSL certificate can be revoked and becomes invalid before the issued expiration time. A Certificate Authority (CA) can publish a list of revoked certificates (CRL) for clients to download. Java has builtin support for certificate revocation status check. Similar to all other Java security features, the implementation is provider based. The default provider is from the sun package.
 Please note that I am aware that OCSP or OCSP stapling should be preferred over CRL.">
-
-
 <meta itemprop="datePublished" content="2019-06-17T21:31:11&#43;10:00" />
 <meta itemprop="dateModified" content="2019-06-17T21:31:11&#43;10:00" />
 <meta itemprop="wordCount" content="624">
 
 
 
-<meta itemprop="keywords" content="java,SSL," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="java,SSL," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SSL Certificate Revocation Check in Java"/>
 <meta name="twitter:description" content="A SSL certificate can be revoked and becomes invalid before the issued expiration time. A Certificate Authority (CA) can publish a list of revoked certificates (CRL) for clients to download. Java has builtin support for certificate revocation status check. Similar to all other Java security features, the implementation is provider based. The default provider is from the sun package.
 Please note that I am aware that OCSP or OCSP stapling should be preferred over CRL."/>
@@ -142,75 +139,45 @@ Please note that I am aware that OCSP or OCSP stapling should be preferred over 
       
     </header>
 
-    <main class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
-
-<p>A SSL certificate can be revoked and becomes invalid before the issued expiration time. A Certificate Authority (CA) can publish a <a href="https://en.wikipedia.org/wiki/Certificate_revocation_list">list of revoked certificates (CRL)</a> for clients to download. Java has builtin support for certificate revocation status check. Similar to all other Java security features, the implementation is <a href="https://docs.oracle.com/en/java/javase/11/security/oracle-providers.html#GUID-FE2D2E28-C991-4EF9-9DBE-2A4982726313">provider</a> based. The default provider is from the <code>sun</code> package.</p>
-
+    <main class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>A SSL certificate can be revoked and becomes invalid before the issued expiration time. A Certificate Authority (CA) can publish a <a href="https://en.wikipedia.org/wiki/Certificate_revocation_list">list of revoked certificates (CRL)</a> for clients to download. Java has builtin support for certificate revocation status check. Similar to all other Java security features, the implementation is <a href="https://docs.oracle.com/en/java/javase/11/security/oracle-providers.html#GUID-FE2D2E28-C991-4EF9-9DBE-2A4982726313">provider</a> based. The default provider is from the <code>sun</code> package.</p>
 <p><em>Please note that I am aware that <a href="https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol">OCSP</a> or <a href="https://en.wikipedia.org/wiki/OCSP_stapling">OCSP stapling</a> should be preferred over CRL. I am also aware that the whole revocation checking design is sometimes considered problematic. This article by no means advocates the use of CRL. It is merely a technical discussion about its usage and implementation in Java.</em></p>
-
 <h2 id="important-classes">Important Classes</h2>
-
 <h3 id="certpathbuilder-and-certpathvalidator"><code>CertPathBuilder</code> and <code>CertPathValidator</code></h3>
-
 <p>Both are factory classes for retrieving concrete implementations by specifying algorithm and provider parameters:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">CertPathBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;PKIX&#34;</span><span style="color:#f92672">);</span>
 CertPathValidator<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;PKIX&#34;</span><span style="color:#f92672">);</span></code></pre></div>
-
 <p>The underlying engine classes return from above code are <code>SunCertPathBuilder</code> and <code>PKIXCertPathValidator</code>, respectively. Although they are distinct classes, both of them can be used to perform revocation check and the underlying process is almost identical. When revocation status is checked, they both delegate to <code>RevocationChecker</code>.</p>
-
 <h3 id="pkixrevocationchecker-and-revocationchecker"><code>PKIXRevocationChecker</code> and <code>RevocationChecker</code></h3>
-
 <p><code>PKIXRevocationChecker</code> is the abstract super class from <code>java.security.cert</code> package, while <code>RevocationChecker</code> is the concrete implementation from <code>sun.security.provider.certpath</code> package. As <a href="https://www.oracle.com/technetwork/java/faq-sun-packages-142232.html">best practice</a>, we should not directly refer classes from <code>sun</code> packages. Instead, we should stick to <code>PKIXRevocationChecker</code> even though the runtime object is of type <code>RevocationChecker</code>.</p>
-
 <p><code>RevocationChecker</code> does the actual revocation status check. It retrieves CRL from CA&rsquo;s distribution point. By default, this class is configured with <code>PREFER_OCSP</code> so that <a href="https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol">OCSP</a> is preferred over CRL. To enable CRL, it needs to be explicitly configured with the <code>PREFER_CRLS</code> option, e.g:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">CertPathBuilder certPathBuilder <span style="color:#f92672">=</span> CertPathBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;PKIX&#34;</span><span style="color:#f92672">);</span>
 PKIXRevocationChecker revocationChecker <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>PKIXRevocationChecker<span style="color:#f92672">)</span> certPathBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">getRevocationChecker</span><span style="color:#f92672">();</span>
 Set<span style="color:#f92672">&lt;</span>PKIXRevocationChecker<span style="color:#f92672">.</span><span style="color:#a6e22e">Option</span><span style="color:#f92672">&gt;</span> opts <span style="color:#f92672">=</span> EnumSet<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>PKIXRevocationChecker<span style="color:#f92672">.</span><span style="color:#a6e22e">Option</span><span style="color:#f92672">.</span><span style="color:#a6e22e">PREFER_CRLS</span><span style="color:#f92672">);</span>
 revocationChecker<span style="color:#f92672">.</span><span style="color:#a6e22e">setOptions</span><span style="color:#f92672">(</span>opts<span style="color:#f92672">);</span></code></pre></div>
-
 <h3 id="distributionpointfetcher"><code>DistributionPointFetcher</code></h3>
-
 <p>This is a static utility class from the <code>sun</code> package. It is used internally by <code>RevocationChecker</code> to retrieve CRL from CA&rsquo;s distribution point. All the inner workings are purely implementation details and end-users need not worry about it.</p>
-
 <h3 id="pkixparameters"><code>PKIXParameters</code></h3>
-
 <p>This parameter class is used to configure the behavior of <code>CertPathBuilder</code> and <code>CertPathValidator</code>.
 For <code>CertPathBuilder</code>, the <code>PKIXBuilderParameters</code> subclass provides an additional method to specify max length of the certificate chain.</p>
-
 <h3 id="certstore"><code>CertStore</code></h3>
-
 <p>A <code>CertStore</code> is needed to lookup certificates in the process of building <code>CertPath</code>. Do note that any root CA should <strong>not</strong> be added to a <code>CertStore</code>, otherwise following exception will be thrown:</p>
-
-<pre><code class="language-text">sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
-</code></pre>
-
-<p>This is because a Root CA does not have an issuer, which is always required by the <code>CertPathBuilder</code>.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+</code></pre></div><p>This is because a Root CA does not have an issuer, which is always required by the <code>CertPathBuilder</code>.</p>
 <h2 id="system-properties">System Properties</h2>
-
-<h3 id="com-sun-security-enablecrldp"><code>com.sun.security.enableCRLDP</code></h3>
-
+<h3 id="comsunsecurityenablecrldp"><code>com.sun.security.enableCRLDP</code></h3>
 <p>Many tutorials state that above property controls whether CRL is fetched from CA&rsquo;s distribution point. This is only partially true. This property takes effect only when a <code>RevocationChecker</code> is in <em>legacy</em> mode. The legacy mode is activated if <code>RevocationChecker</code> is instantiated with the constructor of signature <code>RevocationChecker(TrustAnchor, ValidatorParams)</code>. This happens when:</p>
-
 <ul>
 <li><code>PKIXParameters.revocationEnabled</code> is set to <code>true</code>, and</li>
 <li>No <code>RevocationChecker</code> is configured for the <code>PKIXParameters</code>.</li>
 </ul>
-
 <p>If a <code>RevocationChecker</code> is retrieved with <code>getRevocationChecker</code> method of either <code>CertPathBuilder</code> or <code>CertPathValidator</code>, the returned <code>RevocationChecker</code> instance is <strong>not</strong> in legacy mode and thus always fetches CRL online, e.g.:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">PKIXRevocationChecker revocationChecker <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>PKIXRevocationChecker<span style="color:#f92672">)</span> certPathBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">getRevocationChecker</span><span style="color:#f92672">();</span>
 Set<span style="color:#f92672">&lt;</span>PKIXRevocationChecker<span style="color:#f92672">.</span><span style="color:#a6e22e">Option</span><span style="color:#f92672">&gt;</span> opts <span style="color:#f92672">=</span> EnumSet<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>PKIXRevocationChecker<span style="color:#f92672">.</span><span style="color:#a6e22e">Option</span><span style="color:#f92672">.</span><span style="color:#a6e22e">PREFER_CRLS</span><span style="color:#f92672">);</span>
 revocationChecker<span style="color:#f92672">.</span><span style="color:#a6e22e">setOptions</span><span style="color:#f92672">(</span>opts<span style="color:#f92672">);</span>
 PKIXBuilderParameters pkixBuilderParameters <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PKIXBuilderParameters<span style="color:#f92672">(</span>keyStore<span style="color:#f92672">,</span> certSelect<span style="color:#f92672">);</span>
 pkixBuilderParameters<span style="color:#f92672">.</span><span style="color:#a6e22e">addCertPathChecker</span><span style="color:#f92672">(</span>pkixRevocationChecker<span style="color:#f92672">);</span></code></pre></div>
-
 <p>Also note that <code>PKIXParameters.revocationEnabled</code> is completely ignored when a <code>RevocationChecker</code> is explicitly configured as above. In another word, it is basically always true when <code>RevocationChecker</code> is explicitly set.</p>
-
-<h3 id="com-sun-net-ssl-checkrevocation"><code>com.sun.net.ssl.checkRevocation</code></h3>
-
+<h3 id="comsunnetsslcheckrevocation"><code>com.sun.net.ssl.checkRevocation</code></h3>
 <p>This property is less well-known and used by <code>sun.security.validator.PKIXValidator</code> to enable revocation checking. Internally it calls <code>CertPathValidator.getInstance(&quot;PKIX&quot;)</code> and passes a <code>PKIXParameters</code> object (with <code>revocationEnabled</code> set to <code>true</code>) to the returned <code>CertPathValidator</code>. Note that this property only enables revocation checking, <strong>not</strong> online CRL fetching. For fetching CRL, we still need to set <code>com.sun.security.enableCRLDP</code>. Usage of <code>PKIXValidator</code> is rather limited: only <code>X509TrustManagerImpl</code>, returned by the default <code>TrustManagerFactory</code>, calls to it.</p>
 <ul class="pa0">
   
@@ -260,7 +227,7 @@ pkixBuilderParameters<span style="color:#f92672">.</span><span style="color:#a6e
     <footer class="bg-navy bottom-0 w-100 pa3" role="contentinfo">
   <div class="flex justify-between">
   <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://ywangd.github.io/" >
-    &copy; 2019 WildPointer
+    &copy; 2020 WildPointer
   </a>
     <div>
 <div hidden>

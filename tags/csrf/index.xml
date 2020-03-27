@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Csrf on WildPointer</title>
+    <title>csrf on WildPointer</title>
     <link>https://ywangd.github.io/tags/csrf/</link>
-    <description>Recent content in Csrf on WildPointer</description>
+    <description>Recent content in csrf on WildPointer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 09 Dec 2018 10:52:34 +1100</lastBuildDate>

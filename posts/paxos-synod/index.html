@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>WildPointer  | Understanding the Synod Protocol and Its Proof</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.67.0" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.955516233bcafa4d2a1c13cea63c7b50.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Understanding the Synod Protocol and Its Proof" />
+<meta property="og:description" content="Introduction The Synod protocol is the centre piece of the Paxos algorithm. The protocol itself is not hard to understand but the proof is not so much. In this article, I attempt to explain the proof in a more accessible way. As a consequence of trying to dumb it down, my explanation is not going to be as bullet-proof as in the paper. But hopefully it serves as an easier entrance and stepping stone." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ywangd.github.io/posts/paxos-synod/" />
+<meta property="article:published_time" content="2020-03-11T23:54:26+11:00" />
+<meta property="article:modified_time" content="2020-03-11T23:54:26+11:00" />
+<meta itemprop="name" content="Understanding the Synod Protocol and Its Proof">
+<meta itemprop="description" content="Introduction The Synod protocol is the centre piece of the Paxos algorithm. The protocol itself is not hard to understand but the proof is not so much. In this article, I attempt to explain the proof in a more accessible way. As a consequence of trying to dumb it down, my explanation is not going to be as bullet-proof as in the paper. But hopefully it serves as an easier entrance and stepping stone.">
+<meta itemprop="datePublished" content="2020-03-11T23:54:26&#43;11:00" />
+<meta itemprop="dateModified" content="2020-03-11T23:54:26&#43;11:00" />
+<meta itemprop="wordCount" content="968">
+
+
+
+<meta itemprop="keywords" content="synod,paxos,algorithm," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Understanding the Synod Protocol and Its Proof"/>
+<meta name="twitter:description" content="Introduction The Synod protocol is the centre piece of the Paxos algorithm. The protocol itself is not hard to understand but the proof is not so much. In this article, I attempt to explain the proof in a more accessible way. As a consequence of trying to dumb it down, my explanation is not going to be as bullet-proof as in the paper. But hopefully it serves as an easier entrance and stepping stone."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  
+  <header class="cover bg-top" style="background-image: url('https://ywangd.github.io/images/ice-cream-shop.jpg');">
+    <div class="pb3-m pb6-l bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://ywangd.github.io/" class="f3 fw2 hover-white no-underline white-90 dib">
+      WildPointer
+    </a>
+    <div class="flex-l items-center">
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/posts/" title="Articles page">
+              Articles
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div hidden>
+  <span id="new-window-0">Opens in a new window</span>
+  <span id="new-window-1">Opens an external site</span>
+  <span id="new-window-2">Opens an external site in a new window</span>
+</div>
+
+
+
+
+
+
+
+<a href="https://github.com/ywangd" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-describedby="new-window-0">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">Understanding the Synod Protocol and Its Proof</h1>
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3 ph0-l">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        ARTICLES
+      </p>
+      <h1 class="f1 athelas mb1">Understanding the Synod Protocol and Its Proof</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-03-11T23:54:26&#43;11:00">March 11, 2020</time>      
+      
+      
+    </header>
+
+    <main class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h2 id="introduction">Introduction</h2>
+<p>The Synod protocol is the centre piece of the <a href="https://en.wikipedia.org/wiki/Paxos_(computer_science)">Paxos algorithm</a>. The protocol itself is not hard to understand but the proof is not so much.
+In this article, I attempt to explain the proof in a more accessible way. As a consequence of trying to dumb it down, my explanation is not going to be as bullet-proof as in <a href="https://lamport.azurewebsites.net/pubs/lamport-paxos.pdf">the paper</a>. But hopefully it serves as an easier entrance and stepping stone.</p>
+<h2 id="concepts">Concepts</h2>
+<p>First, we need to define a few concepts to facilitate the discussion.</p>
+<ul>
+<li><strong>Proposal</strong> - Some value to be voted. The vote can only be <code>yes</code> or no action (abstain).</li>
+<li><strong>Ballot</strong> - An uniquely numbered paper with a proposal written on it. The number can be natural numbers for simplicity. A Ballot with smaller number is considered earlier and vice versa.</li>
+<li><strong>Proposer</strong> - Person who can initiate a new Ballot, i.e. a new round of voting.</li>
+<li><strong>Voter</strong> - Person who can vote for a proposal. Proposers and Voters could be, but not necessarily the same group of people.</li>
+<li><strong>Quoram</strong> - A group of persons who can vote for a particular Ballot. Each Ballot has its own Quoram.</li>
+<li><strong>Vote</strong> - For each Ballot, we keep track of the persons who vote <code>yes</code>. A Ballot is considered <strong>successful</strong> if all Quoram members vote <code>yes</code>.</li>
+<li><strong>InfluencingBallot</strong> - For a particular Ballot, if any of its Quoram member voted in earlier Ballots, find all these Ballots and choose the one with highest number. The InfluencingBallot can be <code>null</code> if none of the Quoram members have participated in earlier ballot.</li>
+</ul>
+<h2 id="the-synod-protocol">The Synod Protocol</h2>
+<p>The Synod protocol builds upon three rules:</p>
+<ol>
+<li>Two different Ballots must have different numbers</li>
+<li>Two arbitrary Quoram must have at least one person in common</li>
+<li>If a Ballot&rsquo;s InfluencingBallot is not null, the two must have the same proposal</li>
+</ol>
+<p>When all of the above holds true, we can then guarantee (the conclusion):</p>
+<p><strong>Once a Ballot is successful, any later Ballots (successful or not) will have the same proposal as the first successful one.</strong></p>
+<h3 id="proof">Proof</h3>
+<p>For the proof, we don&rsquo;t need to worry about how the three rules can be satisfied. In fact, it is important to <strong>not</strong> think about the implementation for the proof because: a) it makes things simpler; 2) it makes the proof purer. The point here is to prove when the rules hold, the conclusion can be guaranteed. The implementation will be discussed in later section.</p>
+<p>The proof is done by contradiction: <strong>Assume</strong> the Synod Theory is wrong, we must be able to find a Ballot that has comes after the successful ballot and has a different proposal. The proof is to show that such a Ballot cannot be found and thus Synod protocol is correct.</p>
+<p>To facilitate discussions, we call the first successful Ballot as <code>B</code> and the other Ballot as <code>C</code>.
+Remember <code>C</code> comes after <code>B</code> and has a different proposal. There could be many ballots with different proposals, let <code>C</code> be the first one of them.</p>
+<p>The proof is as follows:</p>
+<ol>
+<li>By rule 2, <code>C</code>'s Quoram must share at least one person with <code>B</code>'s voters. This means at least one person in <code>C</code>'s Quoram has voted <code>yes</code> for <code>B</code>.</li>
+<li>For Ballot <code>C</code>, find its InfluencingBallot <code>X</code>. By definition of InfluencingBallot, we know <code>X</code> is earlier than <code>C</code>, i.e. <code>X &lt; C</code>.</li>
+<li><code>X</code> must be no earlier than <code>B</code>, i.e. <code>B &lt;= X &lt; C</code>, since <code>B</code> itself could be <code>C</code>'s InfluencingBallot.</li>
+<li>It is obvious that <code>X</code> is not <code>null</code>.</li>
+<li>By rule 3, we know <code>X</code> and <code>C</code> have the same proposal since <code>X</code> is not <code>null</code>.</li>
+<li>Hence <code>X</code> is not <code>B</code> since they have different proposal. This means <code>B &lt; X &lt; C</code>.</li>
+<li>Now we have the contradiction, because:
+<ul>
+<li><code>X</code> is earlier than <code>C</code> and later than <code>B</code>, i.e. <code>B &lt; X &lt; C</code></li>
+<li><code>X</code> and <code>C</code> has the same proposal</li>
+<li>The initial assumption says that <code>C</code> is the first one with a different proposal that comes after <code>B</code>. But above two items show that <code>X</code> is even earlier. Thus our assumption is wrong and the Synod protocol is right.</li>
+</ul>
+</li>
+</ol>
+<h2 id="implementation-how-to-satisfy-the-rules">Implementation (how to satisfy the rules)</h2>
+<p><strong>Rule 1</strong> - Two different ballots must have different numbers</p>
+<p>There are many ways that above can be satisfied. One simple strategy is count by N, where N is the number of persons who can make proposal. So the first person starts from 1, second person starts from 2, etc.</p>
+<p><strong>Rule 2</strong> - Two arbitrary Quoram must have at least one person in common</p>
+<p>This can be sufficed by simply letting the Quoram include the majority of voters. For an example, if there are 3 voters, a Quoram is then comprised of 2 voters.</p>
+<p><strong>Rule 3</strong> - If a Ballot&rsquo;s InfluencingBallot is not null, the two must have the same proposal</p>
+<p>This rule is a bit more involved. When initiating a new Ballot, the proposer requests each Quoram member to tell what their last vote is, i.e. who vote for what proposal in which ballot number. The proposer then select the latest vote (the one with highest ballot number) and use its proposal for the new ballot. In addition, after telling the proposer about their last vote, Quoram members will promise
+to <strong>not</strong> vote (abstain) for any other Ballot that has a lower number. Though they can still vote for ballots that have higher numbers.</p>
+<p>Note that above implementation is abstract. It does not concern the technical details on things like messaging system for communication between voters and proposers. These are important but not the focus of this post.</p>
+<h2 id="summary">Summary</h2>
+<p>Understanding its proof is an important step to truly understand and appreciate the Synod protocol.
+The protocol guarantees consensus on a single proposal. It is the central building block to the Paxos algorithm which is capable for keeping a distributed ledger of multiple proposals.</p>
+<ul class="pa0">
+  
+   <li class="list">
+     <a href="/tags/synod" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">synod</a>
+   </li>
+  
+   <li class="list">
+     <a href="/tags/paxos" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">paxos</a>
+   </li>
+  
+   <li class="list">
+     <a href="/tags/algorithm" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">algorithm</a>
+   </li>
+  
+</ul>
+<div class="mt6">
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "ywangd" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </main>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-navy bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://ywangd.github.io/" >
+    &copy; 2020 WildPointer
+  </a>
+    <div>
+<div hidden>
+  <span id="new-window-0">Opens in a new window</span>
+  <span id="new-window-1">Opens an external site</span>
+  <span id="new-window-2">Opens an external site in a new window</span>
+</div>
+
+
+
+
+
+
+
+<a href="https://github.com/ywangd" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-describedby="new-window-0">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

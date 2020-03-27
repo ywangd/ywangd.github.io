@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on WildPointer</title>
@@ -6,31 +6,40 @@
     <description>Recent content in Tags on WildPointer</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 Mar 2019 20:57:02 +1100</lastBuildDate>
+    <lastBuildDate>Wed, 11 Mar 2020 23:54:26 +1100</lastBuildDate>
     
 	<atom:link href="https://ywangd.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Book</title>
-      <link>https://ywangd.github.io/tags/book/</link>
-      <pubDate>Sat, 23 Mar 2019 20:57:02 +1100</pubDate>
+      <title>algorithm</title>
+      <link>https://ywangd.github.io/tags/algorithm/</link>
+      <pubDate>Wed, 11 Mar 2020 23:54:26 +1100</pubDate>
       
-      <guid>https://ywangd.github.io/tags/book/</guid>
+      <guid>https://ywangd.github.io/tags/algorithm/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Csrf</title>
-      <link>https://ywangd.github.io/tags/csrf/</link>
-      <pubDate>Sun, 09 Dec 2018 10:52:34 +1100</pubDate>
+      <title>paxos</title>
+      <link>https://ywangd.github.io/tags/paxos/</link>
+      <pubDate>Wed, 11 Mar 2020 23:54:26 +1100</pubDate>
       
-      <guid>https://ywangd.github.io/tags/csrf/</guid>
+      <guid>https://ywangd.github.io/tags/paxos/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Java</title>
+      <title>synod</title>
+      <link>https://ywangd.github.io/tags/synod/</link>
+      <pubDate>Wed, 11 Mar 2020 23:54:26 +1100</pubDate>
+      
+      <guid>https://ywangd.github.io/tags/synod/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>java</title>
       <link>https://ywangd.github.io/tags/java/</link>
       <pubDate>Mon, 17 Jun 2019 21:31:11 +1000</pubDate>
       
@@ -39,11 +48,29 @@
     </item>
     
     <item>
-      <title>Ssl</title>
+      <title>SSL</title>
       <link>https://ywangd.github.io/tags/ssl/</link>
       <pubDate>Mon, 17 Jun 2019 21:31:11 +1000</pubDate>
       
       <guid>https://ywangd.github.io/tags/ssl/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>book</title>
+      <link>https://ywangd.github.io/tags/book/</link>
+      <pubDate>Sat, 23 Mar 2019 20:57:02 +1100</pubDate>
+      
+      <guid>https://ywangd.github.io/tags/book/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>csrf</title>
+      <link>https://ywangd.github.io/tags/csrf/</link>
+      <pubDate>Sun, 09 Dec 2018 10:52:34 +1100</pubDate>
+      
+      <guid>https://ywangd.github.io/tags/csrf/</guid>
       <description></description>
     </item>
     
