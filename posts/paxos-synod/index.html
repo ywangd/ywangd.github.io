@@ -38,7 +38,7 @@
 <meta itemprop="description" content="Introduction The Synod protocol is the centre piece of the Paxos algorithm. The protocol itself is not hard to understand but the proof is not so much. In this article, I attempt to explain the proof in a more accessible way. As a consequence of trying to dumb it down, my explanation is not going to be as bullet-proof as in the paper. But hopefully it serves as an easier entrance and stepping stone.">
 <meta itemprop="datePublished" content="2020-03-11T23:54:26&#43;11:00" />
 <meta itemprop="dateModified" content="2020-03-11T23:54:26&#43;11:00" />
-<meta itemprop="wordCount" content="968">
+<meta itemprop="wordCount" content="970">
 
 
 
@@ -160,16 +160,16 @@ In this article, I attempt to explain the proof in a more accessible way. As a c
 <p>When all of the above holds true, we can then guarantee (the conclusion):</p>
 <p><strong>Once a Ballot is successful, any later Ballots (successful or not) will have the same proposal as the first successful one.</strong></p>
 <h3 id="proof">Proof</h3>
-<p>For the proof, we don&rsquo;t need to worry about how the three rules can be satisfied. In fact, it is important to <strong>not</strong> think about the implementation for the proof because: a) it makes things simpler; 2) it makes the proof purer. The point here is to prove when the rules hold, the conclusion can be guaranteed. The implementation will be discussed in later section.</p>
-<p>The proof is done by contradiction: <strong>Assume</strong> the Synod Theory is wrong, we must be able to find a Ballot that has comes after the successful ballot and has a different proposal. The proof is to show that such a Ballot cannot be found and thus Synod protocol is correct.</p>
-<p>To facilitate discussions, we call the first successful Ballot as <code>B</code> and the other Ballot as <code>C</code>.
+<p>For the proof, we don&rsquo;t need to worry about how the three rules can be satisfied. In fact, it is important to <strong>not</strong> think about the implementation for the proof because: a) it makes things simpler; b) it makes the proof purer. The point here is to prove when the rules hold, the conclusion can be guaranteed. The implementation will be discussed in later section.</p>
+<p>The proof is done by contradiction: First <strong>assume</strong> the Synod Theory is wrong, we must be able to find a Ballot that comes after the successful ballot and has a different proposal. Then we show that such a Ballot cannot be found and thus Synod protocol is correct.</p>
+<p>For clarity, we call the first successful Ballot as <code>B</code> and the other Ballot as <code>C</code>.
 Remember <code>C</code> comes after <code>B</code> and has a different proposal. There could be many ballots with different proposals, let <code>C</code> be the first one of them.</p>
 <p>The proof is as follows:</p>
 <ol>
 <li>By rule 2, <code>C</code>'s Quoram must share at least one person with <code>B</code>'s voters. This means at least one person in <code>C</code>'s Quoram has voted <code>yes</code> for <code>B</code>.</li>
 <li>For Ballot <code>C</code>, find its InfluencingBallot <code>X</code>. By definition of InfluencingBallot, we know <code>X</code> is earlier than <code>C</code>, i.e. <code>X &lt; C</code>.</li>
 <li><code>X</code> must be no earlier than <code>B</code>, i.e. <code>B &lt;= X &lt; C</code>, since <code>B</code> itself could be <code>C</code>'s InfluencingBallot.</li>
-<li>It is obvious that <code>X</code> is not <code>null</code>.</li>
+<li>It is obvious that <code>X</code> is not <code>null</code> since it could be at least <code>B</code>.</li>
 <li>By rule 3, we know <code>X</code> and <code>C</code> have the same proposal since <code>X</code> is not <code>null</code>.</li>
 <li>Hence <code>X</code> is not <code>B</code> since they have different proposal. This means <code>B &lt; X &lt; C</code>.</li>
 <li>Now we have the contradiction, because:
@@ -182,11 +182,11 @@ Remember <code>C</code> comes after <code>B</code> and has a different proposal.
 </ol>
 <h2 id="implementation-how-to-satisfy-the-rules">Implementation (how to satisfy the rules)</h2>
 <p><strong>Rule 1</strong> - Two different ballots must have different numbers</p>
-<p>There are many ways that above can be satisfied. One simple strategy is count by N, where N is the number of persons who can make proposal. So the first person starts from 1, second person starts from 2, etc.</p>
+<p>There are many ways for above rule to be satisfied. A simple strategy is to count by N, where N is the number of proposers. The first proposer starts from 1, second proposer starts from 2, etc.</p>
 <p><strong>Rule 2</strong> - Two arbitrary Quoram must have at least one person in common</p>
 <p>This can be sufficed by simply letting the Quoram include the majority of voters. For an example, if there are 3 voters, a Quoram is then comprised of 2 voters.</p>
 <p><strong>Rule 3</strong> - If a Ballot&rsquo;s InfluencingBallot is not null, the two must have the same proposal</p>
-<p>This rule is a bit more involved. When initiating a new Ballot, the proposer requests each Quoram member to tell what their last vote is, i.e. who vote for what proposal in which ballot number. The proposer then select the latest vote (the one with highest ballot number) and use its proposal for the new ballot. In addition, after telling the proposer about their last vote, Quoram members will promise
+<p>This rule is a bit more involved. When initiating a new Ballot, the proposer must request each Quoram member to tell what their last vote is, i.e. who vote for what proposal in which ballot number. The proposer then selects the latest vote (the one with highest ballot number) and use its proposal for the new ballot. In addition, after telling the proposer about their last vote, Quoram members will promise
 to <strong>not</strong> vote (abstain) for any other Ballot that has a lower number. Though they can still vote for ballots that have higher numbers.</p>
 <p>Note that above implementation is abstract. It does not concern the technical details on things like messaging system for communication between voters and proposers. These are important but not the focus of this post.</p>
 <h2 id="summary">Summary</h2>
